@@ -35,13 +35,12 @@ def convert_label(label):
 
 
 def get_label_value(hand):
-    return 1_00_00_00_00 * convert_label(hand[0]) + 1_00_00_00 * convert_label(hand[1]) + 1_00_00 * convert_label(
-        hand[2]) + 1_00 * convert_label(hand[3]) + convert_label(hand[4])
+    return sum(convert_label(hand[i]) * 10 ** (8 - 2 * i) for i in range(len(hand)))
 
 
 def get_value(line):
     hand = line.split(' ')[0]
-    return 1_00_00_00_00_00 * get_kind_value(hand) + get_label_value(hand)
+    return 1e10 * get_kind_value(hand) + get_label_value(hand)
 
 
 lines = sorted(data.split('\n'), key=get_value)
@@ -51,4 +50,6 @@ for rank, line in enumerate(lines):
     _, bid = line.split(' ')
     answer += int(bid) * (rank + 1)
 
-submit(answer)
+assert answer == 250370104
+print(answer)
+# submit(answer)
