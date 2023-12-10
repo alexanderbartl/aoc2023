@@ -5,9 +5,10 @@ from aocd import data, submit
 lines = data.split('\n')
 
 start = [(x, y) for y, line in enumerate(lines) for x, char in enumerate(line) if char == 'S'][0]
+visited = ({start}, {start})
 
 paths = ([start], [start])
-while len(set(paths[0]).intersection(set(paths[1]))) < 2:
+while paths[0][-1] != paths[1][-1] or len(visited[0]) == 1:
     for i, path in enumerate(paths):
         x, y = path[-1]
         candidates = []
@@ -33,7 +34,8 @@ while len(set(paths[0]).intersection(set(paths[1]))) < 2:
             if lines[y][x + 1] in '-J7':
                 candidates.append((x + 1, y))
             candidates = candidates[i:i + 1]
-        path.append([c for c in candidates if c not in path][0])
+        path.append([c for c in candidates if c not in visited[i]][0])
+        visited[i].add(path[-1])
 
 print(len(paths[0]) - 1)
 # submit(len(paths[0]) - 1)
@@ -53,4 +55,5 @@ for y in range(len(lines)):
             print(' ', end='')
     print()
 
+print(answer_b)
 submit(answer_b)
