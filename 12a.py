@@ -13,10 +13,12 @@ def check_line(springs, expected):
         elif spring == '#' and springs[i - 1] == '#':
             actual[-1] += 1
         elif spring == '?':
-            return len(actual) <= len(expected) and springs[i:].replace('?', '#').count('#') >= sum(
-                expected[len(actual):]) and all(
-                actual[j] == expected[j] or (actual[j] < expected[j] and j == len(actual) - 1)
-                for j in range(len(actual)))
+            if not actual:
+                return True
+            return len(actual) <= len(expected) and \
+                springs[i:].replace('?', '#').count('#') >= sum(expected[len(actual):]) and \
+                actual[:-1] == expected[:len(actual) - 1] and \
+                actual[-1] <= expected[len(actual) - 1]
 
     return actual == expected
 
@@ -34,13 +36,13 @@ def permutate(springs, expected):
 answer_a = 0
 answer_b = 0
 for line in lines:
-    print('.', end='', flush=True)
+    # print('.', end='', flush=True)
     springs, counts = line.split(' ')
     counts = [int(count) for count in counts.split(',')]
-    answer_a += len([config for config in permutate(springs, counts)])
-    answer_b += len([config for config in permutate('?'.join([springs] * 5), counts * 5)])
+    answer_a += len(list(permutate(springs, counts)))
+    # answer_b += len([config for config in permutate('?'.join([springs] * 5), counts * 5)])
 
 print()
 print(answer_a)
 print(answer_b)
-submit(answer_b)
+# submit(answer_b)
